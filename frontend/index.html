@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Library</title>
+</head>
+<body>
+  <h1>Library System</h1>
+
+  <input id="title" placeholder="Title">
+  <input id="author" placeholder="Author">
+  <button onclick="addBook()">Add Book</button>
+
+  <h2>Books</h2>
+  <ul id="list"></ul>
+
+<script>
+const API = "https://your-backend-url.onrender.com/books";
+
+async function addBook() {
+  const title = document.getElementById("title").value;
+  const author = document.getElementById("author").value;
+
+  await fetch(API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title, author,
+      isbn: Date.now().toString(),
+      genre: "General",
+      publisher: "Unknown",
+      totalCopies: 1
+    })
+  });
+
+  loadBooks();
+}
+
+async function loadBooks() {
+  const res = await fetch(API);
+  const data = await res.json();
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  data.forEach(book => {
+    const li = document.createElement("li");
+    li.innerText = book.title + " - " + book.author;
+    list.appendChild(li);
+  });
+}
+
+loadBooks();
+</script>
+</body>
+</html>
